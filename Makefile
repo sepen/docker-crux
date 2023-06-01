@@ -20,7 +20,8 @@ help:
 	@echo
 	@echo "Where sub-commands are:"
 	@echo "  latest     Build and push CRUX latest image"
-	@echo "  mini       Build and push CRUX minimal image"
+	@echo "  mini       Build and push CRUX mini image"
+	@echo "  updated    Build and push CRUX updated image"
 	@echo "  all        Build and push all images"
 	@echo "  login      Authenticate into your registry"
 	@echo
@@ -50,3 +51,11 @@ mini:
 	# mini
 	docker tag sepen/crux:3.7-mini sepen/crux:mini
 	docker push sepen/crux:mini
+
+updated:
+	# 3.7-updated
+	docker build -t sepen/crux:3.7-updated -f 3.7-updated/Dockerfile .
+	docker push sepen/crux:3.7-updated
+	# mini
+	docker tag sepen/crux:3.7-updated sepen/crux:updated
+	docker push sepen/crux:updated
