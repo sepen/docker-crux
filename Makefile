@@ -1,7 +1,7 @@
 # PHONY goal dynamically
 .PHONY: $(MAKECMDGOALS)
 
-ifneq ($(MAKECMDGOALS), help)
+ifeq ($(MAKECMDGOALS), login)
 
 ifndef DOCKER_USERNAME
 $(error "You must set DOCKER_USERNAME. Type `make help` for more info.")
