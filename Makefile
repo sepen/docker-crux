@@ -31,7 +31,7 @@ help:
 	@echo "  DOCKER_USER=myuser DOCKER_PASS=mypass make login"
 	@echo "  make login DOCKER_USER=myuser DOCKER_PASS=mypass"
 
-all: latest mini
+all: latest mini updated
 
 login:
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) docker.io
