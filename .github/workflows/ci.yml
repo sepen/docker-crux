@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build all Docker images
     - uses: actions/checkout@v3
+
+    - name: Build all Docker images
       run: make all
