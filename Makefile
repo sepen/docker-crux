@@ -72,8 +72,8 @@ slim: 3.7-slim
 
 3.7-updated-setup: $(ISO2TAR_CMD)
 	cd 3.7-updated-setup && \
-		wget --no-verbose --continue https://crux.ninja/updated-iso/crux-3.7.iso && \
-		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
+		wget --no-verbose --continue https://crux.ninja/updated-iso/crux-3.7-updated.iso && \
+		sudo $(ISO2TAR_CMD) crux-3.7-updated.iso && \
 		docker build -t sepen/crux:3.7-updated-setup .
 		docker push sepen/crux:3.7-updated-setup
 
