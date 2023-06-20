@@ -1,10 +1,18 @@
 name: Workflow for setup image
 
 on:
+
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - 'setup/**'
+
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - 'setup/**'
 
 jobs:
 
