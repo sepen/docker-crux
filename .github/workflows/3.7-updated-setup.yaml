@@ -29,4 +29,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push image
-      run: make updated-setup
+      run: make 3.7-updated-setup updated-setup
