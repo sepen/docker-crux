@@ -1,4 +1,4 @@
-# CRUX 3.7 setup Docker image
+# Docker setup image for CRUX 3.7
 
 FROM alpine AS builder
 COPY crux-3.7.tar /tmp
