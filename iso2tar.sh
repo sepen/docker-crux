@@ -36,7 +36,7 @@ losetup ${LOOP_DEVICE} ${ISO_FILE}
 mount ${LOOP_DEVICE} ${TMP_DIR}
 
 # create tarball
-cd ${TMP_DIR} && pwd && ls && tar -cf ${WORK_DIR}/${TAR_FILE} * && cd ${WORK_DIR}
+cd ${TMP_DIR} && tar -cf ${WORK_DIR}/${TAR_FILE} * && cd ${WORK_DIR}
 
 # umount
 umount ${TMP_DIR}
