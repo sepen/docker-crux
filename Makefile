@@ -38,13 +38,13 @@ all: image-setup image-latest image-mini image-updated
 login:
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) docker.io
 
-3.7-setup: $(ISO2TAR_CMD) login
+3.7-setup: $(ISO2TAR_CMD)
 	cd 3.7-setup && \
 		wget -q http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso && \
 		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
 		docker build -t sepen/crux:3.7-setup .
 		docker push sepen/crux:3.7-setup
 
-setup: 3.7-setup login
+setup: 3.7-setup
 	docker tag sepen/crux:3.7-setup sepen/crux:setup
 	docker push sepen/crux:setup
