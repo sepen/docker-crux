@@ -1,4 +1,4 @@
-name: Workflow for setup image
+name: Workflow for updated image
 
 on:
 
@@ -6,13 +6,13 @@ on:
     branches:
       - main
     paths:
-      - '3.7-setup/**'
+      - '3.7-updated/**'
 
   pull_request:
     branches:
       - main
     paths:
-      - '3.7-setup/**'
+      - '3.7-updated/**'
 
 jobs:
 
@@ -29,4 +29,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push image
-      run: make setup
+      run: make updated
