@@ -1,6 +1,8 @@
 # PHONY goal dynamically
 .PHONY: $(MAKECMDGOALS)
 
+ISO2TAR_CMD = $(shell pwd)/iso2tar.sh
+
 ifeq ($(MAKECMDGOALS), login)
 
 ifndef DOCKER_USERNAME
@@ -31,31 +33,18 @@ help:
 	@echo "  DOCKER_USER=myuser DOCKER_PASS=mypass make login"
 	@echo "  make login DOCKER_USER=myuser DOCKER_PASS=mypass"
 
-all: latest mini updated
+all: image-setup image-latest image-mini image-updated
 
 login:
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) docker.io
 
-latest:
-	# 3.7
-	docker build -t sepen/crux:3.7 -f 3.7/Dockerfile .
-	docker push sepen/crux:3.7
-	# latest
-	docker tag sepen/crux:3.7 sepen/crux:latest
-	docker push sepen/crux:latest
+3.7-setup: $(ISO2TAR_CMD) login
+	cd 3.7-setup && \
+		wget -q http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso && \
+		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
+		docker build -t sepen/crux:3.7-setup .
+		docker push sepen/crux:3.7-setup
 
-mini:
-	# 3.7-mini
-	docker build -t sepen/crux:3.7-mini -f 3.7-mini/Dockerfile .
-	docker push sepen/crux:3.7-mini
-	# mini
-	docker tag sepen/crux:3.7-mini sepen/crux:mini
-	docker push sepen/crux:mini
-
-updated:
-	# 3.7-updated
-	docker build -t sepen/crux:3.7-updated -f 3.7-updated/Dockerfile .
-	docker push sepen/crux:3.7-updated
-	# mini
-	docker tag sepen/crux:3.7-updated sepen/crux:updated
-	docker push sepen/crux:updated
+setup: 3.7-setup login
+	docker tag sepen/crux:3.7-setup sepen/crux:setup
+	docker push sepen/crux:setup
