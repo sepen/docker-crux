@@ -1,3 +1,5 @@
+# 3.7-updated-slim/Dockerfile
+
 FROM sepen/crux:3.7-updated as builder
 
 RUN ports -u && prt-get remove \
