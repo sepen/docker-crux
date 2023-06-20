@@ -43,7 +43,7 @@ login:
 
 3.7-setup: $(ISO2TAR_CMD)
 	cd 3.7-setup && \
-		wget -c -L -q http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso && \
+		wget --no-verbose --continue http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso && \
 		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
 		docker build -t sepen/crux:3.7-setup .
 		docker push sepen/crux:3.7-setup
@@ -72,7 +72,7 @@ slim: 3.7-slim
 
 3.7-updated-setup: $(ISO2TAR_CMD)
 	cd 3.7-updated-setup && \
-		wget -c -L -q https://crux.ninja/updated-iso/crux-3.7.iso && \
+		wget --no-verbose --continue https://crux.ninja/updated-iso/crux-3.7.iso && \
 		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
 		docker build -t sepen/crux:3.7-updated-setup .
 		docker push sepen/crux:3.7-updated-setup
