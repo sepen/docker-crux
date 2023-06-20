@@ -10,3 +10,5 @@ RUN ports -u && prt-get remove \
 
 FROM scratch
 COPY --from=builder / /
+
+CMD /usr/bin/crux

@@ -6,4 +6,4 @@ RUN install -d -m 0755 -o root -g root /mnt/var/lib/pkg && \
 FROM scratch
 COPY --from=builder /mnt /
 
-CMD ["/usr/bin/crux"]
+CMD /usr/bin/crux
