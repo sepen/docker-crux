@@ -6,13 +6,13 @@ on:
     branches:
       - main
     paths:
-      - 'setup/**'
+      - '3.7-setup/**'
 
   pull_request:
     branches:
       - main
     paths:
-      - 'setup/**'
+      - '3.7-setup/**'
 
 jobs:
 
