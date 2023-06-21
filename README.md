@@ -24,7 +24,7 @@ The largest images. Wiith everything the CRUX ISO brings in /media/crux (core, o
 
 `crux:updated` or `crux:<CRUX_VERSION>-updated`
 
-They are an up-to-date variant based on an unofficial CRUX ISO built with updated packages for avoiding long compile times due to updates after an official release. This ISO is contributed by Matt Housh and available from his site [crux.ninja](https://crux.ninja/updated-iso/).
+They are an up-to-date variant based on an unofficial CRUX ISO built with updated packages for avoiding long compile times due to updates after an official release. This updated ISO is contributed by Matt Housh and available from his site [crux.ninja](https://crux.ninja/).
 
 For this variant, there are also subvariants like `updated-slim` and `updated-setup`, etc.
 
