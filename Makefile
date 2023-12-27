@@ -45,7 +45,7 @@ login:
 	cd 3.7-setup && \
 		wget --no-verbose --continue http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso && \
 		sudo $(ISO2TAR_CMD) crux-3.7.iso && \
-		docker build -t sepen/crux:3.7-setup .
+		docker build -t sepen/crux:3.7-setup . && \
 		docker push sepen/crux:3.7-setup
 
 setup: 3.7-setup
@@ -54,7 +54,7 @@ setup: 3.7-setup
 
 3.7:
 	cd 3.7 && \
-		docker build -t sepen/crux:3.7 .
+		docker build -t sepen/crux:3.7 . && \
 		docker push sepen/crux:3.7
 
 latest: 3.7
@@ -63,7 +63,7 @@ latest: 3.7
 
 3.7-slim:
 	cd 3.7-slim && \
-		docker build -t sepen/crux:3.7-slim .
+		docker build -t sepen/crux:3.7-slim . && \
 		docker push sepen/crux:3.7-slim
 
 slim: 3.7-slim
@@ -74,7 +74,7 @@ slim: 3.7-slim
 	cd 3.7-updated-setup && \
 		wget --no-verbose --continue https://crux.ninja/updated-iso/crux-3.7-updated.iso && \
 		sudo $(ISO2TAR_CMD) crux-3.7-updated.iso && \
-		docker build -t sepen/crux:3.7-updated-setup .
+		docker build -t sepen/crux:3.7-updated-setup . && \
 		docker push sepen/crux:3.7-updated-setup
 
 updated-setup: 3.7-updated-setup
@@ -83,7 +83,7 @@ updated-setup: 3.7-updated-setup
 
 3.7-updated:
 	cd 3.7-updated && \
-		docker build -t sepen/crux:3.7-updated .
+		docker build -t sepen/crux:3.7-updated . && \
 		docker push sepen/crux:3.7-updated
 
 updated: 3.7-updated
@@ -92,7 +92,7 @@ updated: 3.7-updated
 
 3.7-updated-slim:
 	cd 3.7-updated-slim && \
-		docker build -t sepen/crux:3.7-updated-slim .
+		docker build -t sepen/crux:3.7-updated-slim . && \
 		docker push sepen/crux:3.7-updated-slim
 
 updated-slim: 3.7-updated-slim
@@ -100,6 +100,24 @@ updated-slim: 3.7-updated-slim
 	docker push sepen/crux:updated-slim
 
 
+#
+# legacy 2.6
+#
 
+2.6-setup: $(ISO2TAR_CMD)
+	cd 2.6-setup && \
+		wget --no-verbose --continue http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-2.6/iso/crux-2.6.iso && \
+		sudo $(ISO2TAR_CMD) crux-2.6.iso && \
+		mkdir tmp && \
+		tar -C tmp -xf crux-2.6.tar && \
+		tmp/tools/unsquashfs -d rootfs tmp/crux.squashfs 2>/dev/null && \
+		cd rootfs && tar cf ../rootfs-2.6.tar * && cd .. && \
+		rm -r tmp rootfs && \
+		docker build -t sepen/crux:2.6-setup . && \
+		docker push sepen/crux:2.6-setup
 
+2.6:
+	cd 2.6 && \
+		docker build -t sepen/crux:2.6 .
+		docker push sepen/crux:2.6
 
