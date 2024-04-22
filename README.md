@@ -11,22 +11,32 @@ To artifacts required for these images are built using the [iso2tar.sh](https://
 
 The images tagged as `setup` are the ones that are made first. All other images use these `setup` images as part of multistage builds.
 
+The images are not multi-arch. If you are looking for an image compatible with the ARM architecture please check the `arm64` and `armhf` image variants.
+
 ## Image Variants
 
-`crux:slim` or `crux:<CRUX_VERSION>-slim`
+### `crux:slim` or `crux:<CRUX_VERSION>-slim`
 
 These tags are an experiment in providing a slimmer base removing some extra files and packages that are normally not necessary within containers.
 See the Dockerfile of those for more details about what gets removed during the "slimification" process.
 
-`crux:setup` or `crux:<CRUX_VERSION>-setup`
+### `crux:setup` or `crux:<CRUX_VERSION>-setup`
 
 The largest images. Wiith everything the CRUX ISO brings in /media/crux (core, opt and xorg packages, tools, boot files, etc.) and ready to use as installation media (see examples)
 
-`crux:updated` or `crux:<CRUX_VERSION>-updated`
+### `crux:updated` or `crux:<CRUX_VERSION>-updated`
 
 They are an up-to-date variant based on an unofficial CRUX ISO built with updated packages for avoiding long compile times due to updates after an official release. This updated ISO is contributed by Matt Housh and available from his site [crux.ninja](https://crux.ninja/).
 
 For this variant, there are also subvariants like `updated-slim` and `updated-setup`, etc.
+
+### `crux:arm64` or `crux:<CRUX_VERSION>-arm64`
+
+Based on CRUX-ARM and optimized for AArch64 ARM devices (platform arm64/v8).
+
+### `crux:armhf` or `crux:<CRUX_VERSION>-armhf`
+
+Based on CRUX-ARM and optimized for HardFloat ARM devices (platform arm32/v7).
 
 
 ## Supported tags and respective Dockerfile links
@@ -37,7 +47,8 @@ For this variant, there are also subvariants like `updated-slim` and `updated-se
 * [`3.7-updated`](https://github.com/sepen/docker-crux/blob/main/3.7-updated/Dockerfile), [`updated`](https://github.com/sepen/docker-crux/blob/main/3.7-updated/Dockerfile)
 * [`3.7-updated-slim`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-slim/Dockerfile), [`updated-slim`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-slim/Dockerfile)
 * [`3.7-updated-setup`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-setup/Dockerfile), [`updated-setup`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-setup/Dockerfile) 
-
+* [`3.7-arm64`](https://github.com/sepen/docker-crux/blob/main/3.7-arm64/Dockerfile), [`arm64`](https://github.com/sepen/docker-crux/blob/main/3.7-arm64/Dockerfile)
+* [`3.7-armhf`](https://github.com/sepen/docker-crux/blob/main/3.7-armhf/Dockerfile), [`armhf`](https://github.com/sepen/docker-crux/blob/main/3.7-armhf/Dockerfile)
 
 ## Examples:
 
@@ -50,11 +61,13 @@ $ sudo umount /mnt
 
 To test building a port (with the `updated` variant)
 ```
-$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated /bin/bash -c 'cd /tmp/ports/myport && pkgmk -d'
+$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
+    /bin/bash -c 'cd /tmp/ports/myport && pkgmk -d'
 ``` 
 
 To test building a port with its dependencies (with the `updated` variant)
 
 ```
-$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated /bin/bash -c 'prt-get depinst myport --config-prepend="prtdir /tmp/ports"'
+$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
+    /bin/bash -c 'prt-get depinst myport --config-prepend="prtdir /tmp/ports"'
 ```

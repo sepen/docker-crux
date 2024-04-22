@@ -20,7 +20,7 @@ endif
 help:
 	@echo "Usage: make <target>"
 	@echo
-	@echo "Where targets are:"
+	@echo "Where some targets are:"
 	@echo "  setup           Build and push CRUX setup image"
 	@echo "  latest          Build and push CRUX latest image"
 	@echo "  slim            Build and push CRUX slim image"
@@ -30,13 +30,11 @@ help:
 	@echo "  all             Build and push all images"
 	@echo "  login           Authenticate into your registry"
 	@echo
-	@echo "Where the `login` sub-command requires to provide these variables:"
+	@echo "Where login requires to provide these extra variables:"
 	@echo "  DOCKER_USERNAME and DOCKER_PASSWORD"
-	@echo "Examples:"
-	@echo "  DOCKER_USER=myuser DOCKER_PASS=mypass make login"
-	@echo "  make login DOCKER_USER=myuser DOCKER_PASS=mypass"
+	@echo
 
-all: setup latest slim update-setup updated updated-slim
+all: setup latest slim update-setup updated updated-slim arm64 armhf
 
 login:
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) docker.io
@@ -98,6 +96,38 @@ updated: 3.7-updated
 updated-slim: 3.7-updated-slim
 	docker tag sepen/crux:3.7-updated-slim sepen/crux:updated-slim
 	docker push sepen/crux:updated-slim
+
+
+# arm64
+
+3.7-arm64/crux-arm-3.7-aarch64-rc5.rootfs.tar.xz:
+	cd 3.7-arm64 && \
+		curl -SL -O https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-aarch64-rc5.rootfs.tar.xz
+
+3.7-arm64: 3.7-arm64/Dockerfile 3.7-arm64/crux-arm-3.7-aarch64-rc5.rootfs.tar.xz
+	cd 3.7-arm64 && \
+		docker build -t sepen/crux:3.7-arm64 . && \
+		docker push sepen/crux:3.7-arm64
+
+arm64: 3.7-arm64
+	docker tag sepen/crux:3.7-arm64 sepen/crux:arm64
+	docker push sepen/crux:arm64
+
+
+# armhf
+
+3.7-armhf/crux-arm-3.7-rc4.rootfs.tar.xz:
+	cd 3.7-armhf && \
+		curl -SL -O https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-rc4.rootfs.tar.xz
+
+3.7-armhf: 3.7-armhf/Dockerfile 3.7-armhf/crux-arm-3.7-rc4.rootfs.tar.xz
+	cd 3.7-armhf && \
+		docker build -t sepen/crux:3.7-armhf . && \
+		docker push sepen/crux:3.7-armhf
+
+armhf: 3.7-armhf
+	docker tag sepen/crux:3.7-armhf sepen/crux:armhf
+	docker push sepen/crux:armhf
 
 
 #
