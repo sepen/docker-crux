@@ -56,8 +56,8 @@ jobs:
           fi
           
           # Check if the folder for the version exists
-          if [ -d "$version_folder" ]; then
-            echo "Folder $version_folder exists. Building and pushing Docker image..."
+          if [ -d "$folder" ]; then
+            echo "Folder $folder exists. Building and pushing Docker image..."
             
             # Create and use the buildx builder instance
             docker buildx create --use
