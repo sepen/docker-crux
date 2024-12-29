@@ -1,5 +1,4 @@
-
-# 3.7/Dockerfile
+# 3.7-amd64
 
 FROM sepen/crux:3.7-setup as builder
 RUN install -d -m 0755 -o root -g root /mnt/var/lib/pkg && \

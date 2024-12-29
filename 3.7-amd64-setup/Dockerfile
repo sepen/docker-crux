@@ -1,11 +1,11 @@
-# 3.7-updated-setup
-# Updated and setup variant, which contains patches or updates on top of the base image
+# 3.7-amd64-setup
+# Setup variant, typically used for environment initialization and ready to use as installation media
 
 FROM alpine AS builder
-COPY crux-3.7-updated.tar /tmp
+COPY crux-3.7.tar /tmp
 RUN install -d -m 0755 -o root -g root /iso && \
     install -d -m 0755 -o root -g root /rootfs && \
-    tar -C /iso -xf /tmp/crux-3.7-updated.tar && \
+    tar -C /iso -xf /tmp/crux-3.7.tar && \
     tar -C /rootfs -xf /iso/rootfs.tar.xz && \
     rm -rf /iso/boot /iso/rootfs.tar.xz && \
     rm -rf /rootfs/boot /rootfs/lib/firmware /rootfs/lib/modules

@@ -1,0 +1,85 @@
+name: Build and push Multi-Architecture Docker Images for CRUX
+
+on:
+  push:
+    branches:
+      - main  # Trigger builds on push to the main branch (you can change this as needed)
+  pull_request:
+    branches:
+      - main  # Trigger builds on PR to the main branch (you can change this as needed)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use an Ubuntu runner
+    strategy:
+      matrix:
+        version: [2.6, 3.7, 3.7-updated ]  # Specify the versions to build for
+        arch: [amd64, arm64, armhf]  # List of architectures (amd64, arm64, armhf)
+        variant: ["", setup, slim]  # List of variants
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checkout the repository code
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx for multi-platform builds
+        with:
+          use-new-buildx: true  # Use the latest version of Buildx
+
+      - name: Set up Docker QEMU for ARM emulation
+        uses: docker/setup-qemu-action@v2  # Set up QEMU to allow ARM emulation
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7  # Enable support for amd64, arm64, and armhf
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2  # Log in to DockerHub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username (from GitHub Secrets)
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password/token (from GitHub Secrets)
+
+      - name: Check if directory exists and build Docker image
+        run: |
+          # Determine the platform
+          case "${{ matrix.arch }}" in
+            "amd64") platform="linux/amd64" ;;
+            "arm64") platform="linux/arm64" ;;
+            "armhf") platform="linux/arm/v7" ;;
+          esac
+
+          # If variant is an empty string, handle it by skipping the variant part
+          if [ -z "${{ matrix.variant }}" ]; then
+            variant_tag=""
+            folder="${{ matrix.version }}-${{ matrix.arch }}"
+          else
+            variant_tag="-${{ matrix.variant }}"
+            folder="${{ matrix.version }}-${{ matrix.arch }}${variant_tag}"
+          fi
+          
+          # Check if the folder for the version alone exists (e.g., 3.7)
+          if [ -d "$version_folder" ]; then
+            echo "Folder $version_folder exists. Building and pushing Docker image..."
+            
+            # Create and use the buildx builder instance
+            docker buildx create --use
+
+            # Build the image for selected platforms and push it
+            docker buildx build \
+              --platform ${platform} \
+              -f "$folder/Dockerfile" \
+              -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
+              --push $folder
+          else
+            echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
+          fi
+
+      - name: Check if symlink exists and add additional tag for a Docker image
+        run: |          
+          find . -type l -exec basename {} \; | while read l; do \
+            d=$(readlink -f $l)
+            d=$(basename $d)
+            echo "Tagging $l --> $d"
+            docker tag sepen/crux:$d sepen/crux:$l
+          done          
+
+      - name: Logout from DockerHub
+        run: docker logout  # Log out from DockerHub to clean up authentication details

@@ -32,12 +32,12 @@ CRUX images are versioned and categorized based on architecture and build varian
 
 The base image tags follow the format: `crux:<version>`
 
-Where `<version>` represents the version of CRUX (e.g., `3.5`, `3.6`, `3.7`, etc.). This is the primary version of the image for the default architecture x86_64 (aka. `amd64`).
+Where `<version>` represents the version of CRUX (e.g., `3.6`, `3.7`, `3.7-updated`, etc.). This is the primary version of the image for the default architecture x86_64 (aka. `amd64`).
 Examples include:
 
 - `crux:3.7`
 - `crux:3.6`
-- `crux:3.5`
+- `crux:3.7-updated`
 
 ### Latest Tag
 

@@ -1,4 +1,4 @@
-# 2.6/Dockerfile
+# 2.6-amd64
 
 FROM sepen/crux:2.6-setup as builder
 RUN install -d -m 0755 -o root -g root /mnt/var/lib/pkg && \
