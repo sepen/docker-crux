@@ -1,73 +1,201 @@
-# docker-crux
+# **CRUX** Linux Docker Images (Unofficial)
 
-CRUX Linux Unofficial Docker Images
+This document provides a breakdown of the available Docker image tags for the CRUX Linux distribution. Each tag corresponds to a specific version or variant of CRUX, designed for different architectures or use cases.
+
+## CRUX 3.7 for 64-bit Intel/AMD architectures
+
+| Image tag  | Description |
+| ---------- | ----------- |
+| `crux:3.7` | Base image for CRUX version 3.7 (default architecture `amd64`). |
+| `crux:3.6` | Base image for CRUX version 3.6 (default architecture `amd64`). |
+| `crux:latest` | Latest stable CRUX version (default architecture `amd64`). |
+| `crux:3.7-setup` | Setup variant of CRUX 3.7 (default architecture `amd64`). Likely a minimal image to start a CRUX installation. |
+| `crux:3.7-updated` | Updated variant for CRUX 3.7 (default architecture `amd64`). Includes the latest patches and updates. |
+| `crux:3.7-slim` | Slim variant for CRUX 3.7 (default architecture `amd64`). A minimal version with fewer packages for optimized performance. |
+
+## CRUX for ARM Architectures
+
+| Image tag | Description |
+| -------------------- | ----------------------------------------- |
+| `crux:3.7-armhf` | CRUX 3.7 for ARMv7 (32-bit) architecture. |
+| `crux:3.7-arm64` | CRUX 3.7 for ARMv8 (64-bit) architecture. |
+| `crux:armhf` | Latest CRUX for ARMv7 (32-bit) architecture. |
+| `crux:arm64` | Latest CRUX for ARMv8 (64-bit) architecture. |
+| `crux:3.7-armhf-updated` | Updated variant for CRUX 3.7 (ARMv7/32-bit) architecture. Includes the latest patches and updates. |
+| `crux:3.7-arm64-updated` | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture. Includes the latest patches and updates. |
+
+## General Naming Convention
+
+CRUX images are versioned and categorized based on architecture and build variant. The tags follow a consistent naming convention, making it easy to identify both the version and type of image.
+
+### Base Image Tags
+
+The base image tags follow the format: `crux:<version>`
+
+Where `<version>` represents the version of CRUX (e.g., `3.5`, `3.6`, `3.7`, etc.). This is the primary version of the image for the default architecture x86_64 (aka. `amd64`).
+Examples include:
+
+- `crux:3.7`
+- `crux:3.6`
+- `crux:3.5`
+
+### Latest Tag
+
+The `latest` tag always points to the most recent stable version of the CRUX image. If no architecture is specified, Docker will default to the `amd64` architecture.
+
+- `crux:latest` → points to `crux:3.7` (or the latest stable version).
 
 
-## About these images
+### Variant Tags
 
-The `crux:latest` tag will always point the latest official CRUX release. Those releases are also tagged with their version (ie, `crux:latest` is an alias for `crux:3.7`, `crux:slim` is an alias for `crux:3.7-slim`, etc).
+CRUX also provides variant tags for different use cases. These include setup, updated, and slim versions.
+The format for these tags is:
 
-To artifacts required for these images are built using the [iso2tar.sh](https://github.com/sepen/docker-crux/blob/main/iso2tar.sh) tool. This tool converts a CRUX release from ISO format to TAR format, and then decompressing this TAR file we can extract packages and all resources necessary to generate the images.
+`crux:<version>-<variant>`
 
-The images tagged as `setup` are the ones that are made first. All other images use these `setup` images as part of multistage builds.
+Where `<variant>` can be:
 
-The images are not multi-arch. If you are looking for an image compatible with the ARM architecture please check the `arm64` and `armhf` image variants.
+- `setup`: Setup variant, typically used for environment initialization and ready to use as installation media (see examples)
+- `updated`: Updated variant, which contains patches or updates on top of the base image.
+- `slim`: Base image with a minimal set of packages.
 
-## Image Variants
+For example:
 
-### `crux:slim` or `crux:<CRUX_VERSION>-slim`
+- `crux:3.6-setup`
+- `crux:3.6-updated`
+- `crux:3.7-slim`
 
-These tags are an experiment in providing a slimmer base removing some extra files and packages that are normally not necessary within containers.
-See the Dockerfile of those for more details about what gets removed during the "slimification" process.
+The latest tags for these variants are also available:
 
-### `crux:setup` or `crux:<CRUX_VERSION>-setup`
-
-The largest images. Wiith everything the CRUX ISO brings in /media/crux (core, opt and xorg packages, tools, boot files, etc.) and ready to use as installation media (see examples)
-
-### `crux:updated` or `crux:<CRUX_VERSION>-updated`
-
-They are an up-to-date variant based on an unofficial CRUX ISO built with updated packages for avoiding long compile times due to updates after an official release. This updated ISO is contributed by Matt Housh and available from his site [crux.ninja](https://crux.ninja/).
-
-For this variant, there are also subvariants like `updated-slim` and `updated-setup`, etc.
-
-### `crux:arm64` or `crux:<CRUX_VERSION>-arm64`
-
-Based on CRUX-ARM and optimized for AArch64 ARM devices (platform arm64/v8).
-
-### `crux:armhf` or `crux:<CRUX_VERSION>-armhf`
-
-Based on CRUX-ARM and optimized for HardFloat ARM devices (platform arm32/v7).
+- `crux:setup` → points to `crux:3.7-setup` (or the latest setup variant).
+- `crux:updated` → points to `crux:3.7-updated` (or the latest updated variant).
+- `crux:slim` → points to `crux:3.7-slim` (or the latest updated variant).
 
 
-## Supported tags and respective Dockerfile links
+## Architecture-Specific Tags
 
-* [`3.7`](https://github.com/sepen/docker-crux/blob/main/3.7/Dockerfile), [`latest`](https://github.com/sepen/docker-crux/blob/main/3.7/Dockerfile) 
-* [`3.7-slim`](https://github.com/sepen/docker-crux/blob/main/3.7-slim/Dockerfile), [`slim`](https://github.com/sepen/docker-crux/blob/main/3.7-slim/Dockerfile)
-* [`3.7-setup`](https://github.com/sepen/docker-crux/blob/main/3.7-setup/Dockerfile), [`setup`](https://github.com/sepen/docker-crux/blob/main/3.7-setup/Dockerfile) 
-* [`3.7-updated`](https://github.com/sepen/docker-crux/blob/main/3.7-updated/Dockerfile), [`updated`](https://github.com/sepen/docker-crux/blob/main/3.7-updated/Dockerfile)
-* [`3.7-updated-slim`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-slim/Dockerfile), [`updated-slim`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-slim/Dockerfile)
-* [`3.7-updated-setup`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-setup/Dockerfile), [`updated-setup`](https://github.com/sepen/docker-crux/blob/main/3.7-updated-setup/Dockerfile) 
-* [`3.7-arm64`](https://github.com/sepen/docker-crux/blob/main/3.7-arm64/Dockerfile), [`arm64`](https://github.com/sepen/docker-crux/blob/main/3.7-arm64/Dockerfile)
-* [`3.7-armhf`](https://github.com/sepen/docker-crux/blob/main/3.7-armhf/Dockerfile), [`armhf`](https://github.com/sepen/docker-crux/blob/main/3.7-armhf/Dockerfile)
+CRUX supports multiple architectures, and these are reflected in the image tags using architecture-specific suffixes:
 
-## Examples:
+`crux:<version>-<arch>`
+
+Where `<arch>` can be one of the following:
+
+- `armhf` for ARMv7 (32-bit architecture)
+- `arm64` for ARMv8 (64-bit architecture)
+- `amd64` (x86_64) for 64-bit Intel/AMD architectures (default, no need to specify)
+
+For example:
+
+- `crux:3.7-armhf` → CRUX 3.7 for ARMv7 (32-bit).
+- `crux:3.7-arm64` → CRUX 3.7 for ARMv8 (64-bit).
+- `crux:3.7-amd64` → CRUX 3.6 for 64-bit Intel/AMD architectures.
+
+If no architecture is specified, Docker will assume `amd64` (default architecture):
+
+- `crux:3.7` → CRUX 3.7 for x86_64.
+- `crux:latest` → Latest CRUX version for x86_64.
+
+### Architecture-Specific Variant Tags
+
+CRUX also provides architecture-specific variant images. These follow the same pattern as the base images and include the `setup` and `updated` variants:
+
+`crux:<version>-<arch>-<variant>`
+
+Where `<arch>` is the architecture (`armhf`, `arm64`, `amd64`), and `<variant>` can be `setup`, `slim` or `updated`.
+
+For example:
+
+- `crux:3.7-armhf-updated`
+- `crux:3.7-arm64-updated`
+- `crux:3.6-amd64-slim`
+
+The latest tags for these variants are available as well:
+
+- `crux:armhf` → latest CRUX for ARMv7 (32-bit).
+- `crux:arm64` → latest CRUX for ARMv8 (64-bit).
+
+
+## Example Tag Breakdown
+
+| Image Tag                           | Description                                                     |
+|-------------------------------------|-----------------------------------------------------------------|
+| `crux:3.7`                          | Base image for CRUX version 3.7 (default architecture `amd64`)  |
+| `crux:3.6`                          | Base image for CRUX version 3.6 (default architecture `amd64`)  |
+| `crux:latest`                       | Latest version of CRUX (default architecture `amd64`)           |
+| `crux:3.7-setup`                    | Setup variant for CRUX 3.7 (default architecture `amd64`)       |
+| `crux:3.7-updated`                  | Updated variant for CRUX 3.7 (default architecture `amd64`)     |
+| `crux:3.7-slim`                     | Slim variant for CRUX 3.7 (default architecture `amd64`)        |
+| `crux:3.7-armhf`                    | CRUX 3.7 for ARMv7 (32-bit) architecture                        |
+| `crux:3.7-arm64`                    | CRUX 3.7 for ARMv8 (64-bit) architecture                        |
+| `crux:armhf`                        | Latest CRUX for ARMv7 (32-bit) architecture                     |
+| `crux:arm64`                        | Latest CRUX for ARMv8 (64-bit) architecture                     |
+| `crux:3.7-armhf-updated`            | Updated variant for CRUX 3.7 (ARMv7/32-bit) architecture        |
+| `crux:3.7-arm64-updated`            | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture        |
+
+## Multi-Architecture Support
+
+CRUX images also support multi-architecture builds. When a user pulls an image without specifying an architecture, Docker will automatically pull the appropriate image for the host platform. This includes the default `amd64` architecture as well as `armhf` and `arm64` for ARM-based systems.
+
+For example:
+
+- `crux:3.7` will automatically resolve to `crux:3.7-amd64` on an Intel/AMD-based system and `crux:3.7-armhf` or `crux:3.7-arm64` depending on the architecture of the system pulling the image.
+
+## How to Use the Tags
+
+### Pull the Latest Version of CRUX for Your Architecture
+To pull the latest image for your platform (architecture-specific):
+
+```bash
+docker pull crux:latest        # For default architecture (amd64)
+docker pull crux:armhf         # For ARMv7 (32-bit)
+docker pull crux:arm64         # For ARMv8 (64-bit)
+```
+
+### Pull a Specific Version for a Given Architecture
+To pull a specific version of CRUX for a particular architecture:
+
+```shell
+docker pull crux:3.7           # Default architecture (amd64)
+docker pull crux:3.7-armhf     # ARMv7 (32-bit)
+docker pull crux:3.7-arm64     # ARMv8 (64-bit)
+```
+
+### Pull a Variant for a Specific Version and Architecture
+To pull a specific variant (e.g., setup, updated) for a particular version and architecture:
+
+```shell
+docker pull crux:3.7-setup          # Default architecture (amd64)
+docker pull crux:3.7-arm64-updated  # ARMv8 (64-bit) updated variant
+docker pull crux:3.7-armhf-updated  # ARMv7 (32-bit) updated variant
+```
+
+## Using CRUX Docker Images for Installing or Upgrade a CRUX system
 
 To install or upgrade CRUX on a secondary partition (e.g. `/dev/sda2`) we can use the `setup` variant and do something like this:
+
+```shell
+# mount the partition
+sudo mount /dev/sda2 /mnt
+# run a container and share the mountpoint as a volume
+docker run -it -v /mnt:/mnt sepen/crux:setup
+# umount the partition
+sudo umount /mnt
 ```
-$ sudo mount /dev/sda2 /mnt
-$ docker run -it -v /mnt:/mnt sepen/crux:setup
-$ sudo umount /mnt
-```
+
+## Using CRUX Docker Images for Building CRUX Ports
 
 To test building a port (with the `updated` variant)
+```shell
+# run a container and use a local folder as a volume to store ports
+# then execute `pkgmk` to build inside the container
+docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
+   /bin/bash -c 'cd /tmp/ports/myport && pkgmk -d'
 ```
-$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
-    /bin/bash -c 'cd /tmp/ports/myport && pkgmk -d'
-``` 
 
 To test building a port with its dependencies (with the `updated` variant)
-
-```
-$ docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
-    /bin/bash -c 'prt-get depinst myport --config-prepend="prtdir /tmp/ports"'
+```shell
+# run a container and use a local folder as a volume to store ports
+# then execute `prt-get` to build with deps inside the container
+docker run -it -v $(pwd)/ports:/tmp/ports sepen/crux:updated \
+   /bin/bash -c 'prt-get depinst myport --config-prepend="prtdir /tmp/ports"'
 ```

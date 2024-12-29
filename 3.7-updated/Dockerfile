@@ -1,4 +1,5 @@
-# 3.7-updated/Dockerfile
+# 3.7-updated
+# Updated variant, which contains patches or updates on top of the base image
 
 FROM sepen/crux:3.7-updated-setup as builder
 RUN install -d -m 0755 -o root -g root /mnt/var/lib/pkg && \

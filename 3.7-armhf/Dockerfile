@@ -1,4 +1,5 @@
-# 3.7-armhf/Dockefile
+# 3.7-armhf
+# CRUX for ARMv7 (32-bit architecture)
 
 FROM alpine AS builder
 COPY crux-arm-3.7-rc4.rootfs.tar.xz /tmp

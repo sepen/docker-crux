@@ -1,4 +1,5 @@
-# 3.7-updated-setup/Dockerfile
+# 3.7-updated-setup
+# Updated and setup variant, which contains patches or updates on top of the base image
 
 FROM alpine AS builder
 COPY crux-3.7-updated.tar /tmp

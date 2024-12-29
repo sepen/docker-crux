@@ -1,4 +1,5 @@
-# 3.7-slim/Dockerfile
+# 3.7-slim
+# Base image with a minimal set of packages
 
 FROM sepen/crux:3.7 as builder
 

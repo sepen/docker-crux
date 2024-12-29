@@ -1,4 +1,5 @@
-# 3.7-arm64/Dockefile
+# 3.7-arm64
+# CRUX for ARMv8 (64-bit architecture)
 
 FROM alpine AS builder
 COPY crux-arm-3.7-aarch64-rc5.rootfs.tar.xz /tmp

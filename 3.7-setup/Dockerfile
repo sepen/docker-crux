@@ -1,4 +1,5 @@
-# 3.7-setup/Dockefile
+# 3.7-setup
+# Setup variant, typically used for environment initialization and ready to use as installation media
 
 FROM alpine AS builder
 COPY crux-3.7.tar /tmp
