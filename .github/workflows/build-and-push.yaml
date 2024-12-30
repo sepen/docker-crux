@@ -84,14 +84,14 @@ jobs:
             echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
           fi
 
-      #- name: Check if symlink exists and add additional tag for a Docker image
-      #  run: |          
-      #    find . -type l -exec basename {} \; | while read l; do \
-      #      d=$(readlink -f $l)
-      #      d=$(basename $d)
-      #      echo "Tagging $l --> $d"
-      #      docker tag sepen/crux:$d sepen/crux:$l
-      #    done          
+      - name: Check if symlink exists and add additional tag for a Docker image
+        run: |          
+          find . -type l -exec basename {} \; | while read l; do \
+            d=$(readlink -f $l)
+            d=$(basename $d)
+            echo "Tagging Docker image ($l --> $d)"
+            docker tag sepen/crux:$d sepen/crux:$l
+          done          
 
       - name: Logout from DockerHub
         run: docker logout  # Log out from DockerHub to clean up authentication details
