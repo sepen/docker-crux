@@ -1,6 +1,7 @@
 # 3.7-amd64-slim
 # Base image with a minimal set of packages
 
+# Stage 1: Build dependencies
 FROM sepen/crux:3.7 as builder
 
 RUN prt-get remove --no-std-config \
@@ -10,6 +11,7 @@ RUN prt-get remove --no-std-config \
   usbutils vim && \
   rm -rf /mnt /boot 
 
+get# Stage 2: Production image
 FROM scratch
 COPY --from=builder / /
 
