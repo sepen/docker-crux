@@ -1,6 +1,7 @@
 # PHONY goal dynamically
 .PHONY: $(MAKECMDGOALS)
 
+CURL_CMD = curl -SL -O
 ISO2TAR_CMD = $(shell pwd)/iso2tar.sh
 
 ifeq ($(MAKECMDGOALS), login)

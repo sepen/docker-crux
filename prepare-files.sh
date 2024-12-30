@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 readonly BASE_DIR=$(cd $(dirname $0) && pwd)
-readonly ISO2TAR_CMD="$BASE_DIR./iso2tar.sh"
+readonly ISO2TAR_CMD="$BASE_DIR/iso2tar.sh"
 readonly CURL_CMD="curl -SL -O"
 
 # we need the version parameter and folder destination
@@ -19,6 +19,7 @@ if [ ! -d $FOLDER ]; then
 fi
 
 cd "$FOLDER"
+echo "Preparing files for $FOLDER"
 
 case $VERSION in
   3.7-updated|3.7-updated-amd64)

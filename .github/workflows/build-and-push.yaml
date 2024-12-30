@@ -59,14 +59,14 @@ jobs:
             folder="${{ matrix.version }}-${{ matrix.arch }}${variant_tag}"
           fi
 
-          # Check if the folder for the version exists
+          # Check if the folder exists
           if [ -d "$folder" ]; then
 
             # Avoid symlinks
             if [ ! -L "$folder" ]; then
 
               # Prepare required files
-              ./prepare-files.sh ${{ matrix.version }} $folder
+              bash -x prepare-files.sh ${{ matrix.version }} $folder
 
               echo "Building and pushing Docker image..."
 
