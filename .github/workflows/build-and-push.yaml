@@ -21,6 +21,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2  # Checkout the repository code
 
+      - name: Disable sudo password prompt
+        run: |
+          echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2  # Set up Docker Buildx for multi-platform builds
         with:
