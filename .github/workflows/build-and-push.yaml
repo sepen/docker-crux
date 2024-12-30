@@ -54,23 +54,28 @@ jobs:
             variant_tag="-${{ matrix.variant }}"
             folder="${{ matrix.version }}-${{ matrix.arch }}${variant_tag}"
           fi
-          
+
           # Check if the folder for the version exists
           if [ -d "$folder" ]; then
-            echo "Folder $folder exists. Building and pushing Docker image..."
-            
-            # Prepare required files
-            ./prepare-files.sh ${{ matrix.version }} $folder
 
-            # Create and use the buildx builder instance
-            docker buildx create --use
+            # Avoid symlinks
+            if [ ! -L "$folder" ]; then
 
-            # Build the image for selected platforms and push it
-            docker buildx build \
-              --platform ${platform} \
-              -f "$folder/Dockerfile" \
-              -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
-              --push $folder
+              # Prepare required files
+              ./prepare-files.sh ${{ matrix.version }} $folder
+
+              echo "Building and pushing Docker image..."
+
+              # Create and use the buildx builder instance
+              docker buildx create --use
+
+              # Build the image for selected platforms and push it
+              docker buildx build \
+                --platform ${platform} \
+                -f "$folder/Dockerfile" \
+                -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
+                --push $folder
+            fi
           else
             echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
           fi
