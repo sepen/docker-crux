@@ -68,6 +68,15 @@ jobs:
               # Prepare required files
               bash prepare-files.sh $folder || exit 1
 
+              # Get additional tags
+              additional_tags=""
+              find . -type l -exec basename {} \; | while read l; do
+                d=$(readlink -f $l); d=$(basename $d)
+                if [ "${d}" == "${folder}" ]; then
+                  additional_tags="${additional_tags} -t sepen/crux:${l}"
+                fi
+              done
+
               echo "Building and pushing Docker image..."
 
               # Create and use the buildx builder instance
@@ -78,18 +87,8 @@ jobs:
                 --platform ${platform} \
                 -f "$folder/Dockerfile" \
                 -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
+                ${additional_tags} \
                 --push $folder
-
-              # Additional Tags 
-              find . -type l -exec basename {} \; | while read l; do
-                d=$(readlink -f $l); d=$(basename $d)
-                if [ "${d}" == "${folder}" ]; then
-                  echo "Tagging Docker image ($l --> $d)"
-                  docker tag sepen/crux:${d} sepen/crux:${l}
-                  docker push sepen/crux:${l}
-                fi
-              done
-
             fi
           else
             echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
