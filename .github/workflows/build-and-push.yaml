@@ -66,7 +66,7 @@ jobs:
             if [ ! -L "$folder" ]; then
 
               # Prepare required files
-              bash -x prepare-files.sh $folder || exit 1
+              bash prepare-files.sh $folder || exit 1
 
               echo "Building and pushing Docker image..."
 
