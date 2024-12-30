@@ -11,7 +11,7 @@ RUN prt-get remove --no-std-config \
   usbutils vim && \
   rm -rf /mnt /boot 
 
-get# Stage 2: Production image
+# Stage 2: Production image
 FROM scratch
 COPY --from=builder / /
 
