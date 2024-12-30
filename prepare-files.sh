@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 readonly ISO2TAR_CMD="./iso2tar.sh"
+readonly CURL_CMD="curl -SL -O"
 
 # we need the version parameter and folder destination
 if [ $# -ne 2 ]; then
