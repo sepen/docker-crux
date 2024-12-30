@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest  # Use an Ubuntu runner
     strategy:
       matrix:
-        version: [2.6, 3.7, 3.7-updated ]  # Specify the versions to build for
-        arch: [amd64, arm64, armhf]  # List of architectures (amd64, arm64, armhf)
-        variant: ["", setup, slim]  # List of variants
+        version: [2.6, 3.7, 3.7-updated ] # List of versions
+        arch: [amd64, arm64, armhf] # List of architectures (amd64, arm64, armhf)
+        variant: [core, setup, slim] # List of variants
 
     steps:
       - name: Checkout code
@@ -50,48 +50,36 @@ jobs:
             "armhf") platform="linux/arm/v7" ;;
           esac
 
-          # If variant is an empty string, handle it by skipping the variant part
-          if [ -z "${{ matrix.variant }}" ]; then
-            variant_tag=""
-            folder="${{ matrix.version }}-${{ matrix.arch }}"
-          else
-            variant_tag="-${{ matrix.variant }}"
-            folder="${{ matrix.version }}-${{ matrix.arch }}${variant_tag}"
-          fi
+          folder="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
 
-          # Check if the folder exists
-          if [ -d "$folder" ]; then
+          # Check if the folder exists (and is not a symlink)
+          if [ -d "$folder" ] && [ ! -L "$folder" ]; then
 
-            # Avoid symlinks
-            if [ ! -L "$folder" ]; then
+            # Prepare required files
+            bash prepare-files.sh $folder || exit 1
 
-              # Prepare required files
-              bash prepare-files.sh $folder || exit 1
+            # Get additional tags
+            additional_tags=""
+            find . -type l -exec basename {} \; | while read l; do
+              d=$(readlink -f $l); d=$(basename $d)
+              if [ "${d}" == "${folder}" ]; then
+                additional_tags="${additional_tags} -t sepen/crux:${l}"
+              fi
+            done
 
-              # Get additional tags
-              additional_tags=""
-              find . -type l -exec basename {} \; | while read l; do
-                d=$(readlink -f $l); d=$(basename $d)
-                if [ "${d}" == "${folder}" ]; then
-                  additional_tags="${additional_tags} -t sepen/crux:${l}"
-                fi
-              done
+            echo "Building and pushing Docker image..."
 
-              echo "Building and pushing Docker image..."
+            # Create and use the buildx builder instance
+            docker buildx create --use
 
-              # Create and use the buildx builder instance
-              docker buildx create --use
-
-              # Build the image for selected platforms and push it
-              docker buildx build \
-                --platform ${platform} \
-                -f "$folder/Dockerfile" \
-                -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
-                ${additional_tags} \
-                --push $folder
-            fi
-          else
-            echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
+            # Build the image for selected platforms and push it
+            set -x
+            docker buildx build \
+              --platform ${platform} \
+              -f "$folder/Dockerfile" \
+              -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
+              ${additional_tags} \
+              --push $folder
           fi
 
       - name: Logout from DockerHub
