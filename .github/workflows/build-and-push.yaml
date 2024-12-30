@@ -89,7 +89,7 @@ jobs:
                   docker push sepen/crux:${l}
                 fi
               done
-          done
+
             fi
           else
             echo "Folder for ${{ matrix.version }}-${{ matrix.variant }} does not exist. Skipping build."
