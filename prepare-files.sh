@@ -29,10 +29,10 @@ case $FOLDER in
     $CURL_CMD http://ftp.spline.inf.fu-berlin.de/pub/crux/crux-3.7/iso/crux-3.7.iso
     sudo $ISO2TAR_CMD crux-3.7.iso
     ;;
-  3.7-arm64)
+  3.7-arm64-core)
     $CURL_CMD https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-aarch64-rc5.rootfs.tar.xz
     ;;
-  3.7-armhf)
+  3.7-armhf-core)
     $CURL_CMD https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-rc4.rootfs.tar.xz
     ;;
   2.6-amd64-setup)

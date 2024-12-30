@@ -63,7 +63,7 @@ jobs:
             find . -type l -exec basename {} \; | while read l; do
               d=$(readlink -f $l); d=$(basename $d)
               if [ "${d}" == "${folder}" ]; then
-                additional_tags="${additional_tags} -t sepen/crux:${l}"
+                additional_tags="${additional_tags} -t ${l}"
               fi
             done
 
