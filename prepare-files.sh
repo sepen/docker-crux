@@ -5,7 +5,7 @@ readonly ISO2TAR_CMD="$BASE_DIR/iso2tar.sh"
 readonly CURL_CMD="curl -SL -O"
 
 # we need the version parameter and folder destination
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
   echo "Usage: $(basename $0) FOLDER"
   exit 0
 fi
