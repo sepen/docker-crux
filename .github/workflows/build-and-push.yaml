@@ -63,7 +63,7 @@ jobs:
             find . -type l -exec basename {} \; | while read l; do
               d=$(readlink -f $l); d=$(basename $d)
               if [ "${d}" == "${folder}" ]; then
-                additional_tags="${additional_tags} -t ${l}"
+              additional_tags="${additional_tags} -t sepen/crux:${l}"
               fi
             done
 
@@ -77,8 +77,7 @@ jobs:
             docker buildx build \
               --platform ${platform} \
               -f "$folder/Dockerfile" \
-              -t sepen/crux:${{ matrix.version }}-${{ matrix.arch }}${variant_tag} \
-              ${additional_tags} \
+              -t sepen/crux:${folder} -t ${additional_tags} \
               --push $folder
           fi
 
