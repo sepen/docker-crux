@@ -2,7 +2,7 @@
 # Base image with a minimal set of packages
 
 # Stage 1: Build dependencies
-FROM sepen/crux:3.7 as builder
+FROM sepen/crux:3.7-amd64-core as builder
 
 RUN prt-get remove --no-std-config \
   autoconf automake cmake dhcpcd e2fsprogs eudev exim hdparm iptables \

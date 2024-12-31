@@ -1,5 +1,5 @@
 # 3.7-updated-amd64-setup
-# Updated and setup variant, which contains patches or updates on top of the base image
+# Setup variant with the updated version
 
 # Stage 1: Build dependencies
 FROM alpine AS builder

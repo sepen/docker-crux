@@ -1,8 +1,8 @@
-# 3.7-updated-amd64
-# Updated variant, which contains patches or updates on top of the base image
+# 3.7-updated-amd64-core
+# Base variant with the updated version and all core packages installed
 
 # Stage 1: Build dependencies
-FROM sepen/crux:3.7-updated-setup as builder
+FROM sepen/crux:3.7-updated-amd64-setup as builder
 
 RUN install -d -m 0755 -o root -g root /mnt/var/lib/pkg && \
     touch /mnt/var/lib/pkg/db && \

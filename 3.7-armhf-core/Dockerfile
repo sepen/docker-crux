@@ -1,5 +1,6 @@
-# 3.7-armhf
+# 3.7-armhf-core
 # CRUX for ARMv7 (32-bit architecture)
+# Base variant with all core packages installed
 
 # Stage 1: Build dependencies
 FROM alpine AS builder

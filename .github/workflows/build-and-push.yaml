@@ -16,7 +16,7 @@ jobs:
       matrix:
         arch: [ amd64, arm64, armhf ]
         version: [ 3.7, 3.7-updated ]
-        variant: [ core, setup, slim ]
+        variant: [ core, setup, slim, builder ]
         include:
           - arch: amd64
             version: 2.6

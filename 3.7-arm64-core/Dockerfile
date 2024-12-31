@@ -1,5 +1,6 @@
-# 3.7-arm64
+# 3.7-arm64-core
 # CRUX for ARMv8 (64-bit architecture)
+# Base variant with all core packages installed
 
 # Stage 1: Build dependencies
 FROM alpine AS builder

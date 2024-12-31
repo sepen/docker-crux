@@ -1,0 +1,13 @@
+# 3.7-amd64-builder
+# Builder variant with necessary packages to build ports and clone git repositories
+
+# Stage 1: Build dependencies
+FROM sepen/crux:3.7-amd64-core as builder
+
+RUN prt-get depinst fakeroot git
+
+# Stage 2: Production image
+FROM scratch
+COPY --from=builder /mnt /
+
+CMD /usr/bin/crux

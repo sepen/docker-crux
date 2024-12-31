@@ -1,7 +1,7 @@
 # 3.7-updated-amd64-slim
-# Updated variant, which contains patches or updates on top of the base image with a minimal set of packages
+# Slim variant with the updated version
 
-FROM sepen/crux:3.7-updated as builder
+FROM sepen/crux:3.7-updated-amd64-core as builder
 
 RUN ports -u && prt-get remove \
   autoconf automake cmake dhcpcd e2fsprogs eudev exim hdparm iptables \
