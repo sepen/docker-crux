@@ -15,20 +15,25 @@ jobs:
       max-parallel: 3
       matrix:
         arch: [ amd64, arm64, armhf ]
+        version: [ 3.7, 3.7-updated ]
+        variant: [ core, setup, slim ]
         include:
           - arch: amd64
             version: 2.6
             variant: [ core, setup ]
-          - arch: amd64
-            version: [ 3.7, 3.7-updated ]
-            variant: [ core, setup, slim ]
+        exclude:
           - arch: arm64
             version: 3.7
-            variant: core
+            variant: [ setup, slim ]
+          - arch: arm64
+            version: 3.7-updated
+            variant: [ setup, slim ]
           - arch: armhf
             version: 3.7
-            variant: core
-
+            variant: [ setup, slim ]
+          - arch: armhf
+            version: 3.7-updated
+            variant: [ setup, slim ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2  # Checkout the repository code
