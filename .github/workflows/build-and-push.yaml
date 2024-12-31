@@ -55,15 +55,15 @@ jobs:
           # Check if the folder exists (and is not a symlink)
           if [ -d "$folder" ] && [ ! -L "$folder" ]; then
 
-            # Prepare required files
-            bash prepare-files.sh $folder || exit 1
+            set -x
 
             # Get additional tags
             symlink_tags=""
-            find . -type l -exec basename {} \; | while read l; do
-              d=$(readlink -f $l); d=$(basename $d)
-              if [ "${d}" == "${folder}" ]; then
-              symlink_tags="${symlink_tags} -t sepen/crux:${l}"
+            find . -type l -exec basename {} \; | while read symlink; do
+              target=$(readlink -f $symlink); target=$(basename $target)
+              echo "target: $target | folder: $folder"
+              if [ "${target}" == "${folder}" ]; then
+                symlink_tags="${symlink_tags}-t sepen/crux:${symlink}"
               fi
             done
 
@@ -72,8 +72,10 @@ jobs:
             # Create and use the buildx builder instance
             docker buildx create --use
 
+            # Prepare required files
+            bash prepare-files.sh $folder || exit 1
+
             # Build the image for selected platforms and push it
-            set -x
             docker buildx build \
               --platform ${platform} \
               -f "$folder/Dockerfile" \
