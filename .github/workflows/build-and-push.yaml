@@ -41,46 +41,49 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username (from GitHub Secrets)
           password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password/token (from GitHub Secrets)
 
-      - name: Check if directory exists and build Docker image
+      - name: Build Docker image
         run: |
-          # Determine the platform
-          case "${{ matrix.arch }}" in
-            "amd64") platform="linux/amd64" ;;
-            "arm64") platform="linux/arm64" ;;
-            "armhf") platform="linux/arm/v7" ;;
-          esac
 
-          folder="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
+          tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
 
-          # Check if the folder exists (and is not a symlink)
-          if [ -d "$folder" ] && [ ! -L "$folder" ]; then
+          # Check if tag is a folder exists and not a symlink
+          if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
+          
+            image_folder=${tag_suffix}
 
-            set -x
-
-            # Get additional tags
-            symlink_tags=""
+            # Get extra tags from symlinks
+            extra_tags=""
             find . -type l -exec basename {} \; | while read symlink; do
-              target=$(readlink -f $symlink); target=$(basename $target)
-              echo "target: $target | folder: $folder"
-              if [ "${target}" == "${folder}" ]; then
-                symlink_tags="${symlink_tags}-t sepen/crux:${symlink}"
+              target=$(readlink -f $symlink)
+              target=$(basename $target)
+              if [ "${target}" == "${tag_suffix}" ]; then
+                extra_tags="${extra_tags} -t sepen/crux:${symlink}"
               fi
             done
 
-            echo "Building and pushing Docker image..."
+            echo "Building and pushing Docker image: ${image_folder}"
+            echo "... extra_tags: ${extra_tags}""
 
             # Create and use the buildx builder instance
             docker buildx create --use
 
             # Prepare required files
-            bash prepare-files.sh $folder || exit 1
+            bash prepare-files.sh $tag_suffix || exit 1
+
+            # Determine the platform
+            case "${{ matrix.arch }}" in
+              "amd64") platform="linux/amd64" ;;
+              "arm64") platform="linux/arm64" ;;
+              "armhf") platform="linux/arm/v7" ;;
+            esac
 
             # Build the image for selected platforms and push it
             docker buildx build \
               --platform ${platform} \
-              -f "$folder/Dockerfile" \
-              -t sepen/crux:${folder} ${symlink_tags} \
-              --push $folder
+              -f "${image_folder}/Dockerfile" \
+              -t sepen/crux:${tag_suffix} \
+              ${extra_tags} \
+              --push ${image_folder}
           fi
 
       - name: Logout from DockerHub
