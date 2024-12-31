@@ -76,14 +76,7 @@ jobs:
             echo ">>> Image_folder: ${image_folder}"
             
             # Get extra tags from symlinks
-            export extra_tags
-            find . -type l -exec basename {} \; | while read symlink; do
-              target=$(readlink -f $symlink)
-              target=$(basename $target)
-              case "${target}" in
-                "${tag_suffix}") extra_tags="${extra_tags} -t sepen/crux:${symlink}" ;;
-              esac
-            done
+            extra_tags=$(bash get-tag-aliases.sh)
             echo ">>> Extra_tags: ${extra_tags}"
             
             # Create and use the buildx builder instance
