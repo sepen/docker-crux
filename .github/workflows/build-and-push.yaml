@@ -85,21 +85,21 @@ jobs:
             # Prepare required files
             bash prepare-files.sh ${tag_suffix} || exit 1
             
-            # Determine the platform
+            # Determine the Docker platform
             case "${{ matrix.arch }}" in
-              "amd64") platform="linux/amd64" ;;
-              "arm64") platform="linux/arm64" ;;
-              "armhf") platform="linux/arm/v7" ;;
+              "amd64") docker_platform="linux/amd64" ;;
+              "arm64") docker_platform="linux/arm64" ;;
+              "armhf") docker_platform="linux/arm/v7" ;;
             esac
-            echo "Platform: ${platform}"
+            echo "Docker_platform: ${docker_platform}"
             
             # Build the image for selected platforms and push it
+            set -x
             docker buildx build \
-              --platform ${platform} \
+              --push ${image_folder} \
+              --platform ${docker_platform} \
               -f ${image_folder}/Dockerfile \
-              -t sepen/crux:${tag_suffix} \
-              ${extra_tags} \
-              --push ${image_folder}
+              -t sepen/crux:${tag_suffix} ${extra_tags}
           fi
 
       - name: Logout from DockerHub
