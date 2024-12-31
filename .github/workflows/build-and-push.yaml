@@ -76,7 +76,7 @@ jobs:
             echo ">>> Image_folder: ${image_folder}"
             
             # Get extra tags from symlinks
-            extra_tags=$(bash get-tag-aliases.sh)
+            extra_tags=$(bash get-tag-aliases.sh ${tag_suffix})
             echo ">>> Extra_tags: ${extra_tags}"
             
             # Create and use the buildx builder instance
