@@ -27,13 +27,12 @@ jobs:
             variant: [ setup, slim ]
           - arch: arm64
             version: 3.7-updated
-            variant: [ setup, slim ]
           - arch: armhf
             version: 3.7
             variant: [ setup, slim ]
           - arch: armhf
             version: 3.7-updated
-            variant: [ setup, slim ]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2  # Checkout the repository code
@@ -60,10 +59,16 @@ jobs:
 
       - name: Build Docker image
         run: |
+
           tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
+          echo "Tag_suffix: ${tag_suffix}"
+
           # Check if tag is a folder exists and not a symlink
           if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
+
             image_folder="${tag_suffix}"
+            echo "Building and pushing Docker image: ${image_folder}"
+            
             # Get extra tags from symlinks
             extra_tags=""
             find . -type l -exec basename {} \; | while read symlink; do
@@ -73,19 +78,23 @@ jobs:
                 extra_tags="${extra_tags} -t sepen/crux:${symlink}"
               fi
             done
-            echo "Building and pushing Docker image: ${image_folder}"
-            echo "... extra_tags: ${extra_tags}"
+
+            echo "Extra_tags: ${extra_tags}"
+            
             # Create and use the buildx builder instance
             docker buildx create --use
+            
             # Prepare required files
             bash prepare-files.sh $tag_suffix || exit 1
+            
             # Determine the platform
             case "${{ matrix.arch }}" in
               "amd64") platform="linux/amd64" ;;
               "arm64") platform="linux/arm64" ;;
               "armhf") platform="linux/arm/v7" ;;
             esac
-            echo "Platform ${platform} ..."
+            echo "Platform: ${platform}"
+            
             # Build the image for selected platforms and push it
             docker buildx build \
               --platform ${platform} \
