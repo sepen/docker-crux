@@ -15,16 +15,12 @@ jobs:
       max-parallel: 3
       matrix:
         arch: [ amd64, arm64, armhf ]
-        version: [ 3.7 ]
         include:
           - arch: amd64
             version: 2.6
             variant: [ core, setup ]
           - arch: amd64
-            version: 3.7
-            variant: [ core, setup, slim ]
-          - arch: amd64
-            version: 3.7-updated
+            version: [ 3.7, 3.7-updated ]
             variant: [ core, setup, slim ]
           - arch: arm64
             version: 3.7
@@ -73,7 +69,7 @@ jobs:
               fi
             done
             echo "Building and pushing Docker image: ${image_folder}"
-            echo "... extra_tags: ${extra_tags}""
+            echo "... extra_tags: ${extra_tags}"
             # Create and use the buildx builder instance
             docker buildx create --use
             # Prepare required files
