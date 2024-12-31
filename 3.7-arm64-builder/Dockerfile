@@ -4,7 +4,7 @@
 # Stage 1: Build dependencies
 FROM sepen/crux:3.7-arm64-core as builder
 
-RUN prt-get depinst fakeroot git
+RUN ports -u && prt-get depinst fakeroot git
 
 # Stage 2: Production image
 FROM scratch
