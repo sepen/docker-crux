@@ -12,6 +12,6 @@ FOLDER="$1"
 find $BASE_DIR -type l -exec basename {} \; | while read symlink; do
   target_dir=$(basename $(readlink -f $symlink))
   case ${target_dir} in
-    ${FOLDER}) echo -ne "-t sepen/crux:${symlink}" ;;
+    ${FOLDER}) echo -ne "-t sepen/crux:${symlink} " ;;
   esac
 done
