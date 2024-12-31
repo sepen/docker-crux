@@ -14,8 +14,8 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        arch: [amd64, arm64, armhf]
-        version: 3.7
+        arch: [ amd64, arm64, armhf ]
+        version: [ 3.7 ]
         include:
           - arch: amd64
             version: 2.6
