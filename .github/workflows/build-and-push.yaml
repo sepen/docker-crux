@@ -21,6 +21,9 @@ jobs:
             version: 2.6
             variant: [ core, setup ]
           - arch: amd64
+            version: 3.7
+            variant: [ core, setup, slim ]
+          - arch: amd64
             version: 3.7-updated
             variant: [ core, setup, slim ]
           - arch: arm64
