@@ -80,11 +80,10 @@ jobs:
             find . -type l -exec basename {} \; | while read symlink; do
               target=$(readlink -f $symlink)
               target=$(basename $target)
-              if [ "${target}" == "${tag_suffix}" ]; then
-                extra_tags="${extra_tags} -t sepen/crux:${symlink}"
-              fi
+              case "${target}" in
+                "${tag_suffix}") extra_tags="${extra_tags} -t sepen/crux:${symlink}" ;;
+              esac
             done
-
             echo ">>> Extra_tags: ${extra_tags}"
             
             # Create and use the buildx builder instance
