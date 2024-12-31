@@ -12,10 +12,23 @@ jobs:
   build:
     runs-on: ubuntu-latest  # Use an Ubuntu runner
     strategy:
+      max-parallel: 3
       matrix:
-        version: [2.6, 3.7, 3.7-updated ] # List of versions
-        arch: [amd64, arm64, armhf] # List of architectures (amd64, arm64, armhf)
-        variant: [core, setup, slim] # List of variants
+        arch: [amd64, arm64, armhf]
+        version: 3.7
+        include:
+          - arch: amd64
+            version: 2.6
+            variant: [ core, setup ]
+          - arch: amd64
+            version: 3.7-updated
+            variant: [ core, setup, slim ]
+          - arch: arm64
+            version: 3.7
+            variant: core
+          - arch: armhf
+            version: 3.7
+            variant: core
 
     steps:
       - name: Checkout code
@@ -43,13 +56,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-
           tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
 
           # Check if tag is a folder exists and not a symlink
           if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
           
-            image_folder=${tag_suffix}
+            image_folder="${tag_suffix}"
 
             # Get extra tags from symlinks
             extra_tags=""
@@ -77,10 +89,12 @@ jobs:
               "armhf") platform="linux/arm/v7" ;;
             esac
 
+            echo "Platform ${platform} ..."
+
             # Build the image for selected platforms and push it
             docker buildx build \
               --platform ${platform} \
-              -f "${image_folder}/Dockerfile" \
+              -f ${image_folder}/Dockerfile \
               -t sepen/crux:${tag_suffix} \
               ${extra_tags} \
               --push ${image_folder}
