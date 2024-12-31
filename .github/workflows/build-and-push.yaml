@@ -59,11 +59,11 @@ jobs:
             bash prepare-files.sh $folder || exit 1
 
             # Get additional tags
-            additional_tags=""
+            symlink_tags=""
             find . -type l -exec basename {} \; | while read l; do
               d=$(readlink -f $l); d=$(basename $d)
               if [ "${d}" == "${folder}" ]; then
-              additional_tags="${additional_tags} -t sepen/crux:${l}"
+              symlink_tags="${symlink_tags} -t sepen/crux:${l}"
               fi
             done
 
@@ -77,7 +77,7 @@ jobs:
             docker buildx build \
               --platform ${platform} \
               -f "$folder/Dockerfile" \
-              -t sepen/crux:${folder} -t ${additional_tags} \
+              -t sepen/crux:${folder} ${symlink_tags} \
               --push $folder
           fi
 
