@@ -60,12 +60,9 @@ jobs:
       - name: Build Docker image
         run: |
           tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
-
           # Check if tag is a folder exists and not a symlink
           if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
-          
             image_folder="${tag_suffix}"
-
             # Get extra tags from symlinks
             extra_tags=""
             find . -type l -exec basename {} \; | while read symlink; do
@@ -75,25 +72,19 @@ jobs:
                 extra_tags="${extra_tags} -t sepen/crux:${symlink}"
               fi
             done
-
             echo "Building and pushing Docker image: ${image_folder}"
             echo "... extra_tags: ${extra_tags}""
-
             # Create and use the buildx builder instance
             docker buildx create --use
-
             # Prepare required files
             bash prepare-files.sh $tag_suffix || exit 1
-
             # Determine the platform
             case "${{ matrix.arch }}" in
               "amd64") platform="linux/amd64" ;;
               "arm64") platform="linux/arm64" ;;
               "armhf") platform="linux/arm/v7" ;;
             esac
-
             echo "Platform ${platform} ..."
-
             # Build the image for selected platforms and push it
             docker buildx build \
               --platform ${platform} \
