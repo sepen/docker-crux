@@ -3,6 +3,11 @@
 
 FROM sepen/crux:3.7-amd64-core
 
-RUN ports -u && prt-get depinst fakeroot git
+RUN ports -u opt && \
+    cd /usr/ports/opt/fakeroot && \
+    pkgmk -d && pkgadd *.pkg.tar.* && \
+    cd /usr/ports/opt/git && \
+    pkgmk -d && pkgadd *.pkg.tar.* && \
+    rm -rf /usr/ports/*
 
 CMD /usr/bin/crux
