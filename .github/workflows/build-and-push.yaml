@@ -3,48 +3,25 @@ name: Build and push Multi-Architecture Docker Images for CRUX
 on:
   push:
     branches:
-      - main  # Trigger builds on push to the main branch (you can change this as needed)
-  pull_request:
-    branches:
-      - main  # Trigger builds on PR to the main branch (you can change this as needed)
+      - main
+    paths-ignore:
+      - 'README.md'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # Use an Ubuntu runner
+
+  setup-images:
+    runs-on: ubuntu-latest
+
     strategy:
       max-parallel: 3
       matrix:
-        arch: [ amd64, arm64, armhf ]
-        version: [ 3.7, 3.7-updated ]
-        variant: [ core, setup, slim, builder ]
-        include:
-          - arch: amd64
-            version: 2.6
-            variant: [ core, setup ]
-        exclude:
-          - arch: amd64
-            version: 3.7-updated
-            variant: builder
-          - arch: arm64
-            version: 3.7
-            variant: setup
-          - arch: arm64
-            version: 3.7
-            variant: slim
-          - arch: arm64
-            version: 3.7-updated
-          - arch: armhf
-            version: 3.7
-            variant: setup
-          - arch: armhf
-            version: 3.7
-            variant: slim
-          - arch: armhf
-            version: 3.7-updated
+        arch: [ amd64 ]
+        version: [ 2.6, 3.7, 3.7-updated ]
+        variant: [ setup ]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Checkout the repository code
+        uses: actions/checkout@v2
 
       - name: Disable sudo password prompt
         run: |
@@ -97,7 +74,238 @@ jobs:
             echo "Docker_platform: ${docker_platform}"
             
             # Build the image for selected platforms and push it
-            set -x
+            docker buildx build \
+              --push ${image_folder} \
+              --platform ${docker_platform} \
+              -f ${image_folder}/Dockerfile \
+              -t sepen/crux:${tag_suffix} ${extra_tags}
+          fi
+
+      - name: Logout from DockerHub
+        run: docker logout  # Log out from DockerHub to clean up authentication details
+
+  core-images:
+    runs-on: ubuntu-latest
+    needs: setup-images
+
+    strategy:
+      max-parallel: 3
+      matrix:
+        arch: [ amd64 ]
+        version: [ 2.6, 3.7, 3.7-updated ]
+        variant: [ core ]
+        include:
+          - arch: arm64
+            version: [ 3.7 ]
+          - arch: armhf
+            version: [ 3.7 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Disable sudo password prompt
+        run: |
+          echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx for multi-platform builds
+        with:
+          use-new-buildx: true  # Use the latest version of Buildx
+
+      - name: Set up Docker QEMU for ARM emulation
+        uses: docker/setup-qemu-action@v2  # Set up QEMU to allow ARM emulation
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7  # Enable support for amd64, arm64, and armhf
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2  # Log in to DockerHub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username (from GitHub Secrets)
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password/token (from GitHub Secrets)
+
+      - name: Build Docker image
+        run: |
+
+          tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
+          echo ">>> Tag_suffix: ${tag_suffix}"
+
+          # Check if tag is a folder exists and not a symlink
+          if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
+
+            image_folder="${tag_suffix}"
+            echo ">>> Image_folder: ${image_folder}"
+            
+            # Get extra tags from symlinks
+            extra_tags=$(bash get-tag-aliases.sh ${tag_suffix})
+            echo ">>> Extra_tags: ${extra_tags}"
+            
+            # Create and use the buildx builder instance
+            docker buildx create --use
+            
+            # Prepare required files
+            bash prepare-files.sh ${tag_suffix} || exit 1
+            
+            # Determine the Docker platform
+            case "${{ matrix.arch }}" in
+              "amd64") docker_platform="linux/amd64" ;;
+              "arm64") docker_platform="linux/arm64" ;;
+              "armhf") docker_platform="linux/arm/v7" ;;
+            esac
+            echo "Docker_platform: ${docker_platform}"
+            
+            # Build the image for selected platforms and push it
+            docker buildx build \
+              --push ${image_folder} \
+              --platform ${docker_platform} \
+              -f ${image_folder}/Dockerfile \
+              -t sepen/crux:${tag_suffix} ${extra_tags}
+          fi
+
+      - name: Logout from DockerHub
+        run: docker logout  # Log out from DockerHub to clean up authentication details
+
+  slim-images:
+    runs-on: ubuntu-latest
+    needs: core-images
+
+    strategy:
+      max-parallel: 3
+      matrix:
+        arch: [ amd64 ]
+        version: [ 3.7, 3.7-updated ]
+        variant: [ slim ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Disable sudo password prompt
+        run: |
+          echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx for multi-platform builds
+        with:
+          use-new-buildx: true  # Use the latest version of Buildx
+
+      - name: Set up Docker QEMU for ARM emulation
+        uses: docker/setup-qemu-action@v2  # Set up QEMU to allow ARM emulation
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7  # Enable support for amd64, arm64, and armhf
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2  # Log in to DockerHub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username (from GitHub Secrets)
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password/token (from GitHub Secrets)
+
+      - name: Build Docker image
+        run: |
+
+          tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
+          echo ">>> Tag_suffix: ${tag_suffix}"
+
+          # Check if tag is a folder exists and not a symlink
+          if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
+
+            image_folder="${tag_suffix}"
+            echo ">>> Image_folder: ${image_folder}"
+            
+            # Get extra tags from symlinks
+            extra_tags=$(bash get-tag-aliases.sh ${tag_suffix})
+            echo ">>> Extra_tags: ${extra_tags}"
+            
+            # Create and use the buildx builder instance
+            docker buildx create --use
+            
+            # Prepare required files
+            bash prepare-files.sh ${tag_suffix} || exit 1
+            
+            # Determine the Docker platform
+            case "${{ matrix.arch }}" in
+              "amd64") docker_platform="linux/amd64" ;;
+              "arm64") docker_platform="linux/arm64" ;;
+              "armhf") docker_platform="linux/arm/v7" ;;
+            esac
+            echo "Docker_platform: ${docker_platform}"
+            
+            # Build the image for selected platforms and push it
+            docker buildx build \
+              --push ${image_folder} \
+              --platform ${docker_platform} \
+              -f ${image_folder}/Dockerfile \
+              -t sepen/crux:${tag_suffix} ${extra_tags}
+          fi
+
+      - name: Logout from DockerHub
+        run: docker logout  # Log out from DockerHub to clean up authentication details
+
+  builder-images:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 3
+      matrix:
+        arch: [ amd64, arm64, armhf ]
+        version: [ 3.7, 3.7-updated ]
+        variant: [ builder ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Disable sudo password prompt
+        run: |
+          echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx for multi-platform builds
+        with:
+          use-new-buildx: true  # Use the latest version of Buildx
+
+      - name: Set up Docker QEMU for ARM emulation
+        uses: docker/setup-qemu-action@v2  # Set up QEMU to allow ARM emulation
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7  # Enable support for amd64, arm64, and armhf
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2  # Log in to DockerHub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username (from GitHub Secrets)
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub password/token (from GitHub Secrets)
+
+      - name: Build Docker image
+        run: |
+
+          tag_suffix="${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.variant }}"
+          echo ">>> Tag_suffix: ${tag_suffix}"
+
+          # Check if tag is a folder exists and not a symlink
+          if [ -d "$tag_suffix" ] && [ ! -L "$tag_suffix" ]; then
+
+            image_folder="${tag_suffix}"
+            echo ">>> Image_folder: ${image_folder}"
+            
+            # Get extra tags from symlinks
+            extra_tags=$(bash get-tag-aliases.sh ${tag_suffix})
+            echo ">>> Extra_tags: ${extra_tags}"
+            
+            # Create and use the buildx builder instance
+            docker buildx create --use
+            
+            # Prepare required files
+            bash prepare-files.sh ${tag_suffix} || exit 1
+            
+            # Determine the Docker platform
+            case "${{ matrix.arch }}" in
+              "amd64") docker_platform="linux/amd64" ;;
+              "arm64") docker_platform="linux/arm64" ;;
+              "armhf") docker_platform="linux/arm/v7" ;;
+            esac
+            echo "Docker_platform: ${docker_platform}"
+            
+            # Build the image for selected platforms and push it
             docker buildx build \
               --push ${image_folder} \
               --platform ${docker_platform} \
