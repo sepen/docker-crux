@@ -243,13 +243,17 @@ jobs:
 
   builder-images:
     runs-on: ubuntu-latest
+    needs: core-images
 
     strategy:
       max-parallel: 3
       matrix:
         arch: [ amd64, arm64, armhf ]
-        version: [ 3.7, 3.7-updated ]
+        version: [ 3.7 ]
         variant: [ builder ]
+        include:
+          - arch: amd64
+            version: 3.7-updated
 
     steps:
       - name: Checkout code
