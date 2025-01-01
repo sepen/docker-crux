@@ -3,7 +3,8 @@
 
 FROM sepen/crux:3.7-arm64-core
 
-RUN ports -u opt && \
+RUN sed -e '/[JOBS,MAKEFLAGS]=/ s/# export/export/' -i /etc/pkgmk.conf && \
+    ports -u opt && \
     cd /usr/ports/opt/fakeroot && \
     pkgmk -d && pkgadd *.pkg.tar.* && \
     cd /usr/ports/opt/git && \
