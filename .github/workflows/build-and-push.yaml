@@ -254,6 +254,7 @@ jobs:
         include:
           - arch: amd64
             version: 3.7-updated
+            variant: builder
 
     steps:
       - name: Checkout code
