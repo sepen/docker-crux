@@ -17,12 +17,12 @@ This document provides a breakdown of the available Docker image tags for the CR
 
 | Image tag | Description |
 | -------------------- | ----------------------------------------- |
-| `crux:3.7-armhf` | CRUX 3.7 for ARMv7 (32-bit) architecture. |
 | `crux:3.7-arm64` | CRUX 3.7 for ARMv8 (64-bit) architecture. |
-| `crux:armhf` | Latest CRUX for ARMv7 (32-bit) architecture. |
-| `crux:arm64` | Latest CRUX for ARMv8 (64-bit) architecture. |
-| `crux:3.7-armhf-updated` | Updated variant for CRUX 3.7 (ARMv7/32-bit) architecture. Includes the latest patches and updates. |
-| `crux:3.7-arm64-updated` | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture. Includes the latest patches and updates. |
+| `crux:3.7-armhf` | CRUX 3.7 for ARMv7 (32-bit) architecture. |
+| `crux:3.7-arm64-builder` | Builder variant for CRUX 3.7 (ARMv8/64-bit) architecture. Includes fakeroot and git packages. |
+| `crux:3.7-armhf-builder` | Builder variant for CRUX 3.7 (ARMv7/32-bit) architecture. Includes fakeroot and git packages. |
+| `crux:3.7-updated-arm64` | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture. Includes the latest patches and updates. |
+| `crux:3.7-updated-arm64-builder` | Updated and builer variant for CRUX 3.7 (ARMv8/64-bit) architecture. Includes the latest patches, updates and fakeroot and git packages. |
 
 ## General Naming Convention
 
@@ -105,8 +105,8 @@ Where `<arch>` is the architecture (`armhf`, `arm64`, `amd64`), and `<variant>` 
 
 For example:
 
-- `crux:3.7-armhf-updated`
-- `crux:3.7-arm64-updated`
+- `crux:3.7-updated-armhf`
+- `crux:3.7-updated-arm64`
 - `crux:3.6-amd64-slim`
 
 The latest tags for these variants are available as well:
@@ -129,8 +129,8 @@ The latest tags for these variants are available as well:
 | `crux:3.7-arm64`                    | CRUX 3.7 for ARMv8 (64-bit) architecture                        |
 | `crux:armhf`                        | Latest CRUX for ARMv7 (32-bit) architecture                     |
 | `crux:arm64`                        | Latest CRUX for ARMv8 (64-bit) architecture                     |
-| `crux:3.7-armhf-updated`            | Updated variant for CRUX 3.7 (ARMv7/32-bit) architecture        |
-| `crux:3.7-arm64-updated`            | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture        |
+| `crux:3.7-updated-armhf`            | Updated variant for CRUX 3.7 (ARMv7/32-bit) architecture        |
+| `crux:3.7-updated-arm64`            | Updated variant for CRUX 3.7 (ARMv8/64-bit) architecture        |
 
 ## Multi-Architecture Support
 
@@ -165,8 +165,8 @@ To pull a specific variant (e.g., setup, updated) for a particular version and a
 
 ```shell
 docker pull crux:3.7-setup          # Default architecture (amd64)
-docker pull crux:3.7-arm64-updated  # ARMv8 (64-bit) updated variant
-docker pull crux:3.7-armhf-updated  # ARMv7 (32-bit) updated variant
+docker pull crux:3.7-updated-arm64  # ARMv8 (64-bit) updated variant
+docker pull crux:3.7-updated-armhf  # ARMv7 (32-bit) updated variant
 ```
 
 ## Using CRUX Docker Images for Installing or Upgrade a CRUX system
