@@ -1,7 +1,7 @@
-# 3.7-updated-amd64-builder
+# 3.7-updated-arm64-builder
 # Builder variant with the updated version and necessary packages to build ports and clone git repositories
 
-FROM sepen/crux:3.7-updated-amd64-core
+FROM sepen/crux:3.7-updated-arm64-core
 
 RUN sed -e '/[JOBS,MAKEFLAGS]=/ s/# export/export/' -i /etc/pkgmk.conf && \
     ports -u opt && \

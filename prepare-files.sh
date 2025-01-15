@@ -32,6 +32,9 @@ case $FOLDER in
   3.7-arm64-core)
     $CURL_CMD https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-aarch64-rc5.rootfs.tar.xz
     ;;
+  3.7-arm64-core)
+    $CURL_CMD https://master.dl.sourceforge.net/project/crux-arm/releases/3.7-updated/crux-arm-3.7-updated-arm64.rootfs.tar.xz
+    ;;
   3.7-armhf-core)
     $CURL_CMD https://master.dl.sourceforge.net/project/crux-arm/releases/3.7/crux-arm-3.7-rc4.rootfs.tar.xz
     ;;
