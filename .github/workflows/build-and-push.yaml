@@ -96,7 +96,9 @@ jobs:
         variant: [ core ]
         include:
           - arch: arm64
-            version: [ 3.7, 3.7-updated ]
+            version: [ 3.7 ]
+          - arch: arm64
+            version: [ 3.7-updated ]
           - arch: armhf
             version: [ 3.7 ]
 
